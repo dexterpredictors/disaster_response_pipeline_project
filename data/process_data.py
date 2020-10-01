@@ -3,7 +3,11 @@ import pandas as pd
 from sqlalchemy  import create_engine
 
 def load_data(messages_filepath, categories_filepath):
-    """Loads data from csv files and returns merged dataframe"""
+    """Loads data from csv files and returns merged dataframe
+    param: messages_filepath: string (csv path)
+    param: categories_filepath: string (csv path)
+    return: pandas dataframe
+    """
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     return messages.merge(categories, on='id')
@@ -11,6 +15,8 @@ def load_data(messages_filepath, categories_filepath):
 def clean_data(df):
     """Preprocess the categories and returns 
     dataframe without duplicates
+    param: df: pandas dataframe
+    return: pandas dataframe
     """
     # extract & preprocess the categories columns
     df = process_categories(df)
@@ -22,6 +28,8 @@ def clean_data(df):
 def process_categories(df):
     """Preprocess the categories and replaces the original column with 
     multiple binary category columns.
+    param: df: pandas dataframe
+    return: pandas dataframe
     """
     categories = df.categories.str.split(pat=';', expand=True)
     
@@ -36,6 +44,9 @@ def process_categories(df):
 
         # convert column from string to numeric
         categories[column] = categories[column].astype(int)
+        
+        # make sure there are no 2's left
+        categories[column][categories[column] == 2] = 1
     
     # drop the original categories column from `df`
     df.drop(['categories'], axis=1, inplace=True)
@@ -44,9 +55,12 @@ def process_categories(df):
     return pd.concat([df, categories], axis=1)
     
 def save_data(df, database_filename):
-    """Saves the cleaned and processed dataframe to sql db"""
+    """Saves the cleaned and processed dataframe to sql db
+    param: df: pandas dataframe
+    param: database_filename: string
+    """
     engine = create_engine('sqlite:///{}'.format(database_filename))
-    df.to_sql('TrainingData', engine, index=False)
+    df.to_sql('TrainingData', engine, index=False, if_exists='replace')
       
 
 def main():

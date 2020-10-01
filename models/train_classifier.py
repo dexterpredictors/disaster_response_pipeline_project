@@ -20,7 +20,10 @@ from sklearn.pipeline import FeatureUnion
 
 
 def load_data(database_filepath):
-    """Loads data from db and returns features, labels and label names """
+    """Loads data from db and returns features, labels and label names 
+    param: database_filepath: string
+    return: X: numpy.ndarray, Y: numpy.ndarray, labels: list
+    """
     engine = create_engine('sqlite:///{}'.format(database_filepath))
     df = pd.read_sql("SELECT * FROM TrainingData", con=engine)
     
@@ -31,7 +34,10 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
-    '''Case normalize, lemmatize, and tokenize the text'''
+    '''Case normalize, lemmatize, and tokenize the text
+    param: text: string
+    return: list
+    '''
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 
@@ -46,6 +52,7 @@ def tokenize(text):
 def build_model():
     """Defines the pipeline and parameter dictionary
        and build a model using GridSearchCV.
+    return: RandomForestClassifier
     """
     pipeline = Pipeline([
         ('features', FeatureUnion([
@@ -79,6 +86,10 @@ def evaluate_model(model, X_test, Y_test, category_names, database_filepath):
        and creates a dataframe with accuracy, recall & 
        precission details per label name. This df is also
        printed out and stored into database.
+    param: model: A Classifier
+    param: X_test,Y_test : numpy.ndarray
+    param: category_names: list
+    param: database_filepath: string
     """
     y_pred = model.predict(X_test)
     accuracy = (y_pred == Y_test).mean()
@@ -103,7 +114,10 @@ def evaluate_model(model, X_test, Y_test, category_names, database_filepath):
     
   
 def save_model(model, model_filepath):
-    """Saves the trained model into a pickle file"""
+    """Saves the trained model into a pickle file
+    param: model: Classifier
+    param: model_filepath: String
+    """
     with open(model_filepath, 'wb') as f:
         pickle.dump(model, f)
 
