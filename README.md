@@ -12,4 +12,4 @@
     `python run.py`
 
 3. Go to http://0.0.0.0:3001/
-http://view6914b2f4-3001.udacity-student-workspaces.com
+
