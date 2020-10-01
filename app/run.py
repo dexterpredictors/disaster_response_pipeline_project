@@ -26,10 +26,21 @@ def tokenize(text):
 
     return clean_tokens
 
+def top_used_labels(df):
+    labels = [c for c in df.columns if c not in ['id', 'message', 'original', 'genre', 'message_tokn', 'related']]
+    label_dict = {'label': [], 'count': []}
+    for label in labels:
+        label_dict['count'].append(df[label].sum())
+        label_dict['label'].append(label)
+
+    ldf = pd.DataFrame.from_dict(label_dict)
+    return ldf.sort_values(by=['count'], ascending=False).head(10)
+
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('TrainingData', engine)
 val_df = pd.read_sql_table('AccuracyDetails', engine)
+ldf = top_used_labels(df)
 
 # load model
 model = joblib.load("../models/response_model.pkl")
@@ -59,9 +70,27 @@ def index():
             ],
 
             'layout': {
-                'title': 'Distribution of accuracy by label',
+                'title': 'Accuracy by label',
                 'yaxis': {
                     'title': "Accuracy"
+                },
+                'xaxis': {
+                    'title': "Label name"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=ldf['label'].tolist(),
+                    y=ldf['count'].tolist()
+                )
+            ],
+
+            'layout': {
+                'title': 'Top 10 used categories',
+                'yaxis': {
+                    'title': "Sum of related messages"
                 },
                 'xaxis': {
                     'title': "Label name"
