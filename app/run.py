@@ -27,6 +27,9 @@ def tokenize(text):
     return clean_tokens
 
 def top_used_labels(df):
+    """Extracts the top 10 labels by count of related messages
+       Returns: pandas df   
+    """
     labels = [c for c in df.columns if c not in ['id', 'message', 'original', 'genre', 'message_tokn', 'related']]
     label_dict = {'label': [], 'count': []}
     for label in labels:
