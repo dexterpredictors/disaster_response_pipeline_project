@@ -5,7 +5,8 @@ In the Project Workspace, there is a data set containing real messages that were
 This project includes a web app where an emergency worker can input a new message and get classification results in several categories. The web app will also display visualizations of the data & model evaluation.
 
 ### Folder structure:
-“““- app
+‘‘‘
+- app
 | - template
 | |- master.html # main page of web app
 | |- go.html # classification result page of web app
@@ -18,7 +19,8 @@ This project includes a web app where an emergency worker can input a new messag
 - models
 |- train_classifier.py
 |- classifier.pkl # saved model
-- [README.md](http://readme.md/)”””
+- [README.md](http://readme.md/)
+’’’
 
 
 ETL pipeline (process_data.py) extracts, clean and preprocess the data for model training. It also saves the data into sqlite database.
